@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Caronte — Servizio di logistica interdimensionale specializzato nel commercio e messaggistica tra il piano terreno e l'Oltretomba.">
+  <title>Caronte — Spedizioni Interdimensionali</title>
+  
+  <!-- Tailwind CSS Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts Import (Montserrat for Body, Playfair Display as fallback for Clamore Serif) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+  
+  <!-- Configurazione di Tailwind per estendere il tema -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            title: ['"Clamore Serif"', 'Playfair Display', 'Georgia', 'serif'],
+            sans: ['Montserrat', 'sans-serif'],
+          },
+          colors: {
+            charonDeep: '#040815',    // Sfondo primario (vuoto cosmico)
+            charonCard: '#01026',    // Sfondo delle schede (blu profondo)
+            charonBlue: '#0052ff',    // Blu reale elettrico (dalla palette)
+            charonCyan: '#00d2ff',    // Cyan etereo luminoso (dalla palette)
+            charonPurple: '#7c3aed',  // Viola dimensionale (dalla palette)
+            charonViolet: '#a78bfa',  // Violetto chiaro
+            charonDark: '#02050b',    // Quasi nero
+          },
+          animation: {
+            'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'float-delayed': 'float 6s ease-in-out 3s infinite',
+            'orbit': 'orbit 25s linear infinite',
+            'glow-cyan': 'glowCyan 3s ease-in-out infinite',
+            'glow-purple': 'glowPurple 4s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-12px)' },
+            },
+            orbit: {
+              'from': { transform: 'rotate(0deg)' },
+              'to': { transform: 'rotate(360deg)' },
+            },
+            glowCyan: {
+              '0%, 100%': { filter: 'drop-shadow(0 0 5px rgba(0, 210, 255, 0.4))' },
+              '50%': { filter: 'drop-shadow(0 0 15px rgba(0, 210, 255, 0.8))' },
+            },
+            glowPurple: {
+              '0%, 100%': { filter: 'drop-shadow(0 0 5px rgba(124, 58, 237, 0.4))' },
+              '50%': { filter: 'drop-shadow(0 0 15px rgba(124, 58, 237, 0.8))' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- CSS inline per caricamento del font personalizzato Clamore Serif e stili non nativi di Tailwind -->
+  <style>
+    @font-face {
+      font-family: 'Clamore Serif';
+      src: local('Clamore Serif'), 
+           url('./fonts/ClamoreSerif.woff2') format('woff2'),
+           url('./fonts/ClamoreSerif.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+    
+    /* Scrollbar personalizzata per un aspetto moderno */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #040815;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 210, 255, 0.15);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 210, 255, 0.4);
+    }
+    
+    /* Clip path personalizzato per la busta delle lettere */
+    .clip-path-envelope {
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+    }
+
+    /* Effetto glow text per titoli in Clamore */
+    .text-glow {
+      text-shadow: 0 0 20px rgba(0, 210, 255, 0.25);
+    }
+
+    /* Supporto per Scroll Reveal nativo o con IntersectionObserver */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="bg-charonDeep text-slate-100 font-sans overflow-x-hidden relative min-h-screen selection:bg-charonCyan/30 selection:text-white">
+
+  <!-- 1. Overlay Grainy Texture (Grana Organica) per l'effetto premium -->
+  <div class="fixed inset-0 pointer-events-none opacity-[0.035] z-50 bg-[url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"><filter id=\"noiseFilter\"><feTurbulence type=\"fractalNoise\" baseFrequency=\"0.75\" numOctaves=\"3\" stitchTiles=\"stitch\"/></filter><rect width=\"100%\" height=\"100%\" filter=\"url(%23noiseFilter)\"/></svg>')]"></div>
+
+  <!-- 2. Sfondo Stellare Dinamico in Canvas (Costellazioni interattive) -->
+  <canvas id="star-canvas" class="fixed top-0 left-0 w-screen h-screen -z-20 pointer-events-none"></canvas>
+
+  <!-- 3. Nebulose di Sfondo sfumate (Palette colori dell'immagine: Blu, Cyan, Viola) -->
+  <div class="fixed top-0 left-0 w-screen h-screen -z-30 pointer-events-none opacity-45 overflow-hidden">
+    <div class="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-charonBlue/20 rounded-full filter blur-[120px] animate-pulse-slow"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[70%] h-[70%] bg-charonPurple/15 rounded-full filter blur-[150px] animate-float"></div>
+    <div class="absolute top-[35%] right-[20%] w-[45%] h-[45%] bg-charonCyan/10 rounded-full filter blur-[110px] animate-float-delayed"></div>
+  </div>
+
+  <!-- HEADER / NAVBAR -->
+  <header class="fixed top-0 left-0 w-full px-6 py-6 z-40 backdrop-blur-md border-b border-white/5 flex justify-between items-center bg-charonDeep/50 transition-all duration-300" id="main-header">
+    <img src="./Immagini/Logo-15.webp" alt="Logo Caronte" class="w-10 h-10 mb-6 animate-glow-cyan">
+     
+    </a>
+    
+    <!-- Menu desktop -->
+    <nav class="hidden md:flex items-center gap-8" aria-label="Navigazione Principale">
+      <a href="#brand" class="nav-link text-slate-400 hover:text-white text-xs font-semibold tracking-widest uppercase transition duration-300 relative py-1 border-b border-transparent hover:border-charonCyan">Il Brand</a>
+      <a href="#messaggi" class="nav-link text-slate-400 hover:text-white text-xs font-semibold tracking-widest uppercase transition duration-300 relative py-1 border-b border-transparent hover:border-charonCyan">Messaggi</a>
+      <a href="#shop" class="nav-link text-slate-400 hover:text-white text-xs font-semibold tracking-widest uppercase transition duration-300 relative py-1 border-b border-transparent hover:border-charonCyan">Shop</a>
+      <a href="#contatti" class="nav-link text-slate-400 hover:text-white text-xs font-semibold tracking-widest uppercase transition duration-300 relative py-1 border-b border-transparent hover:border-charonCyan">Contatti</a>
+    </nav>
+
+    <!-- Carrello & Bottone CTA -->
+    <div class="flex items-center gap-6">
+      <button class="relative text-slate-300 hover:text-charonCyan transition" aria-label="Visualizza carrello" id="cart-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        <span class="absolute -top-1.5 -right-1.5 bg-charonCyan text-charonDeep text-[9px] font-extrabold w-4.5 h-4.5 rounded-full flex items-center justify-center border border-charonDeep" id="cart-count">0</span>
+      </button>
+      
+      <a href="#messaggi" class="hidden sm:inline-block px-5 py-2.5 rounded-full bg-gradient-to-r from-charonBlue to-charonCyan text-white font-bold tracking-widest text-[10px] uppercase shadow-[0_4px_20px_rgba(0,82,255,0.3)] hover:shadow-[0_8px_30px_rgba(0,210,255,0.5)] transition duration-300 hover:-translate-y-0.5">Avvia Transito</a>
+      
+      <!-- Menu burger per mobile -->
+      <button class="md:hidden text-white focus:outline-none" id="menu-btn" aria-label="Apri menu">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- MENU MOBILE -->
+  <div class="fixed inset-0 z-30 bg-charonDeep/95 backdrop-blur-lg flex flex-col justify-center items-center gap-8 opacity-0 pointer-events-none transition-all duration-300" id="mobile-menu">
+    <a href="#brand" class="mobile-link font-title text-2xl text-slate-300 hover:text-charonCyan tracking-widest">BRAND</a>
+    <a href="#messaggi" class="mobile-link font-title text-2xl text-slate-300 hover:text-charonCyan tracking-widest">MESSAGGI</a>
+    <a href="#shop" class="mobile-link font-title text-2xl text-slate-300 hover:text-charonCyan tracking-widest">SHOP</a>
+    <a href="#contatti" class="mobile-link font-title text-2xl text-slate-300 hover:text-charonCyan tracking-widest">CONTATTI</a>
+    <button class="mt-8 px-6 py-3 rounded-full bg-white/5 border border-white/10 text-white font-semibold text-sm tracking-widest uppercase hover:bg-white/10 transition" id="close-menu-btn">Chiudi</button>
+  </div>
+
+  <main class="max-w-[1200px] mx-auto px-6 pt-24">
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="min-h-[85vh] flex flex-col justify-center items-center text-center py-16 relative">
+      <!-- Sfera rotante wireframe ornamentale in background -->
+      <div class="absolute w-[280px] sm:w-[450px] h-[280px] sm:h-[450px] border border-charonCyan/10 rounded-full animate-orbit opacity-20 pointer-events-none flex items-center justify-center">
+        <div class="w-[90%] h-[90%] border border-dashed border-charonPurple/10 rounded-full"></div>
+        <div class="w-[70%] h-[70%] border border-charonBlue/5 rounded-full absolute"></div>
+      </div>
+
+      <!-- Icona Logo Grande Animata in Hero -->
+      <img src="./Immagini/Logo-14.webp" alt="Logo Caronte" class="w-80 h-80 mb-6 animate-glow-cyan">
+
+      <span class="inline-block px-4 py-1.5 rounded-full bg-charonCyan/5 border border-charonCyan/20 text-charonCyan text-[10px] tracking-[0.25em] uppercase mb-6 shadow-[inset_0_0_10px_rgba(0,210,255,0.1)] font-semibold"> Servizio di spedizioni ultraterrene</span>
+      
+      
+      
+      <p class="text-slate-300 text-base sm:text-lg md:text-xl max-w-[720px] mx-auto font-light leading-relaxed mb-12">
+        La morte è solo un cambio di indirizzo, noi ci occupiamo della spedizione!
+      </p>
+      
+      <div class="flex flex-col sm:flex-row gap-6 justify-center w-full max-w-md">
+        <a href="#messaggi" class="px-8 py-4 rounded-xl bg-gradient-to-r from-charonBlue to-charonCyan text-white font-bold tracking-widest text-xs uppercase shadow-[0_4px_25px_rgba(0,82,255,0.4)] hover:shadow-[0_8px_35px_rgba(0,210,255,0.6)] hover:-translate-y-0.5 transition duration-300 text-center">Spedisci Messaggio</a>
+        <a href="#brand" class="px-8 py-4 rounded-xl bg-white/5 text-white font-bold tracking-widest text-xs uppercase border border-white/10 backdrop-blur-sm hover:bg-white/10 hover:border-charonCyan/40 transition duration-300 text-center">i nostri servizi</a>
+      </div>
+    </section>
+
+    <!-- SECTION: BRAND PROFILE -->
+    <section id="brand" class="py-24 border-t border-white/5 reveal">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-7 space-y-6">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-[1px] bg-charonCyan"></div>
+            <span class="text-charonCyan text-[10px] tracking-[0.3em] uppercase font-bold">Il Nostro Progetto</span>
+          </div>
+          <h2 class="font-title text-4xl sm:text-5xl font-bold tracking-wide uppercase text-white leading-tight">Oltre i Limiti dell'Esistenza</h2>
+          
+          <!-- Testo descrizione richiesto verbatim -->
+          <p class="text-slate-300 text-base font-light leading-relaxed">
+            <strong>Caronte</strong> è l’unico servizio di logistica interdimensionale specializzato nel commercio tra il piano terreno e l’Oltretomba. Abbattendo il confine ultimo dell’esistenza, Caronte permette ai vivi e ai defunti di scambiarsi beni materiali e ricordi, garantendo una continuità affettiva che va oltre il limite della vita.
+          </p>
+          <p class="text-slate-300 text-base font-light leading-relaxed">
+            Il nostro servizio di spedizioni ultraterrene nasce per colmare il vuoto della perdita, permettendoti di inviare un ultimo dono o ricevere un messaggio dal mondo dei morti.
+          </p>
+          
+          <!-- Dettaglio sui Servizi -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6">
+            <div class="bg-charonCard/40 border border-white/5 p-5 rounded-xl hover:border-charonCyan/20 transition group">
+              <div class="w-10 h-10 rounded-lg bg-charonBlue/10 flex items-center justify-center text-charonCyan mb-4 group-hover:bg-charonBlue/25 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+              <h3 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Spedizione pacchi</h3>
+              <p class="text-slate-400 text-xs font-light leading-relaxed">Dematerializzazione e trasporto fisico di oggetti personali, cimeli o doni oltre la soglia dimensionale.</p>
+            </div>
+            
+            <div class="bg-charonCard/40 border border-white/5 p-5 rounded-xl hover:border-charonCyan/20 transition group">
+              <div class="w-10 h-10 rounded-lg bg-charonPurple/10 flex items-center justify-center text-charonViolet mb-4 group-hover:bg-charonPurple/25 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <h3 class="text-white font-semibold text-sm tracking-wider uppercase mb-2">Messaggi Eterei</h3>
+              <p class="text-slate-400 text-xs font-light leading-relaxed">Servizio di messaggistica istantanea tramite allineamento di frequenza quantistica.</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Grafica Eterea Laterale (Wireframe Interdimensionale) -->
+        <div class="lg:col-span-5 flex justify-center items-center relative py-12 lg:py-0">
+          <div class="relative w-80 h-80 rounded-full border border-white/5 flex items-center justify-center shadow-[0_0_50px_rgba(0,210,255,0.05)]">
+            <!-- Cerchi concentrici rotanti -->
+            <div class="absolute w-[90%] h-[90%] border border-dashed border-charonCyan/20 rounded-full animate-orbit"></div>
+            <div class="absolute w-[70%] h-[70%] border border-charonPurple/20 rounded-full animate-float"></div>
+            <div class="absolute w-[50%] h-[50%] border border-dashed border-white/10 rounded-full"></div>
+            <!-- Stella olografica centrale -->
+            <svg class="w-20 h-20 text-charonCyan animate-pulse" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M 100 40 Q 100 100 40 100 Q 100 100 100 160 Q 100 100 160 100 Q 100 100 100 40 Z" fill="currentColor" opacity="0.8"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: MESSAGING SIMULATOR -->
+    <section id="messaggi" class="py-24 border-t border-white/5 reveal">
+      <div class="text-center mb-16 max-w-2xl mx-auto">
+        <span class="text-charonCyan text-[10px] tracking-[0.35em] uppercase font-bold block mb-3">Servizio di messaggistica</span>
+        <h2 class="font-title text-4xl sm:text-5xl font-bold tracking-wide uppercase text-white mb-4">Canale di Comunicazione</h2>
+        <p class="text-slate-400 text-sm font-light leading-relaxed">
+          Stabilisci una sincronizzazione dimensionale per inviare un messaggio al di là o riceverne uno dai tuoi cari. Inserisci i dati e avvia il trasferimento particellare.
+        </p>
+      </div>
+
+      <div class="bg-charonCard/40 border border-white/5 shadow-[0_30px_60px_rgba(0,0,0,0.5)] rounded-2xl p-6 md:p-10 backdrop-blur-md grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
+        
+        <!-- Form di spedizione (compilabile) -->
+        <div class="lg:col-span-5 flex flex-col justify-between space-y-6">
+          <form id="messaging-form" class="space-y-5">
+            <div class="space-y-2">
+              <label for="route-direction" class="block text-[10px] tracking-widest text-slate-400 uppercase font-semibold">Direzione della Tratta</label>
+              <select id="route-direction" class="w-full bg-charonDeep/60 border border-charonCyan/10 hover:border-charonCyan/30 rounded-xl px-4 py-3.5 text-white text-xs font-semibold tracking-wider outline-none transition focus:border-charonCyan focus:shadow-[0_0_15px_rgba(0,210,255,0.15)]" required>
+                <option value="live-to-dead" selected>Dal Mondo dei Vivi all'Oltretomba</option>
+                <option value="dead-to-live">Dall'Oltretomba al Mondo dei Vivi</option>
+              </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label for="sender-name" class="block text-[10px] tracking-widest text-slate-400 uppercase font-semibold">Mittente</label>
+                <input type="text" id="sender-name" placeholder="Nome o Iniziali" class="w-full bg-charonDeep/60 border border-charonCyan/10 hover:border-charonCyan/30 rounded-xl px-4 py-3.5 text-white text-xs font-semibold outline-none transition focus:border-charonCyan focus:shadow-[0_0_15px_rgba(0,210,255,0.15)]" required>
+              </div>
+              <div class="space-y-2">
+                <label for="recipient-name" class="block text-[10px] tracking-widest text-slate-400 uppercase font-semibold">Destinatario</label>
+                <input type="text" id="recipient-name" placeholder="Nome o Iniziali" class="w-full bg-charonDeep/60 border border-charonCyan/10 hover:border-charonCyan/30 rounded-xl px-4 py-3.5 text-white text-xs font-semibold outline-none transition focus:border-charonCyan focus:shadow-[0_0_15px_rgba(0,210,255,0.15)]" required>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label for="dimension-freq" class="block text-[10px] tracking-widest text-slate-400 uppercase font-semibold">Frequenza del Canale (Eterea)</label>
+              <select id="dimension-freq" class="w-full bg-charonDeep/60 border border-charonCyan/10 hover:border-charonCyan/30 rounded-xl px-4 py-3.5 text-white text-xs font-semibold tracking-wider outline-none transition focus:border-charonCyan focus:shadow-[0_0_15px_rgba(0,210,255,0.15)]" required>
+                <option value="elysium">Campi Elisi (Frequenza Armonica - 432 Hz)</option>
+                <option value="asphodel">Prati di Asfodelo (Frequenza Neutra - 528 Hz)</option>
+                <option value="limbo">Sfera del Limbo (Frequenza Sospesa - 396 Hz)</option>
+              </select>
+            </div>
+
+            <div class="space-y-2">
+              <label for="message-content" class="block text-[10px] tracking-widest text-slate-400 uppercase font-semibold">Contenuto del Messaggio / Lettera</label>
+              <textarea id="message-content" placeholder="Scrivi il tuo messaggio spirituale... Le parole verranno tradotte in segnali ad impulsi quantistici." class="w-full bg-charonDeep/60 border border-charonCyan/10 hover:border-charonCyan/30 rounded-xl px-4 py-3.5 text-white text-xs font-light outline-none resize-none h-32 transition focus:border-charonCyan focus:shadow-[0_0_15px_rgba(0,210,255,0.15)]" required></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-charonBlue to-charonCyan text-white font-bold tracking-widest text-xs uppercase shadow-[0_4px_20px_rgba(0,82,255,0.3)] hover:shadow-[0_8px_30px_rgba(0,210,255,0.5)] transition duration-300 hover:-translate-y-0.5">Avvia Trasmissione</button>
+          </form>
+        </div>
+
+        <!-- Schermo del Portale (HUD + Animazione) -->
+        <div class="lg:col-span-7 bg-charonDark border border-charonCyan/10 rounded-2xl relative overflow-hidden flex flex-col justify-between shadow-[inset_0_0_30px_rgba(0,0,0,0.8)] min-h-[450px]">
+          <!-- Scanline e griglia per effetto HUD -->
+          <div class="absolute inset-0 bg-[radial-gradient(transparent_50%,rgba(4,8,21,0.7)_100%)] pointer-events-none z-10"></div>
+          
+          <!-- HUD Superiore -->
+          <div class="relative z-10 p-6 flex justify-between font-mono text-[9px] text-charonCyan tracking-widest pointer-events-none">
+            <div class="flex flex-col gap-1">
+              <span class="text-slate-500 uppercase">Nodo Mittente</span>
+              <span class="text-white drop-shadow-[0_0_3px_rgba(0,210,255,0.5)] font-semibold" id="hud-sender-val">TERRA.LNK</span>
+            </div>
+            <div class="flex flex-col gap-1 text-right">
+              <span class="text-slate-500 uppercase">Nodo Destinazione</span>
+              <span class="text-white drop-shadow-[0_0_3px_rgba(0,210,255,0.5)] font-semibold" id="hud-recipient-val">ELYSIUM.LNK</span>
+            </div>
+          </div>
+
+          <!-- Canvas di dematerializzazione (particelle che si muovono lungo una Bezier) -->
+          <canvas id="portal-canvas" class="w-full h-full absolute top-0 left-0 z-0"></canvas>
+
+          <!-- Busta da lettera olografica centrale (DOM animato in JS) -->
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+            <!-- Contenitore Busta -->
+            <div id="envelope-interactive" class="w-48 h-32 bg-charonDeep/90 border border-charonCyan/30 rounded-xl shadow-[0_0_40px_rgba(0,210,255,0.15)] flex flex-col justify-between p-4 relative opacity-0 scale-75 transition-all duration-700">
+              <!-- Lettera Interna che esce -->
+              <div id="envelope-letter" class="absolute left-4 right-4 top-2 bg-slate-100 rounded p-3 h-24 text-[8px] text-slate-800 font-medium transition-all duration-500 overflow-hidden leading-relaxed shadow-lg opacity-0 translate-y-2 select-none">
+                <div class="border-b border-slate-300 pb-1 mb-1 font-bold text-[7px] text-charonBlue flex justify-between">
+                  <span>TRASMISSIONE CARONTE</span>
+                  <span id="letter-stamp-date">03-06-2026</span>
+                </div>
+                <div id="letter-body-preview" class="italic"></div>
+              </div>
+              <!-- Lembo della busta -->
+              <div id="envelope-flap" class="absolute top-0 left-0 right-0 h-12 bg-charonCard border-b border-charonCyan/20 clip-path-envelope z-10 transition-transform duration-500 origin-top"></div>
+              <!-- Sigillo olografico -->
+              <div id="envelope-seal" class="absolute top-[38px] left-[84px] w-8 h-8 rounded-full bg-[radial-gradient(circle,rgba(0,210,255,0.8)_0%,rgba(0,82,255,0.9)_100%)] shadow-[0_0_15px_#00d2ff] z-20 flex justify-center items-center text-[10px] font-bold text-white transition-opacity duration-300">C</div>
+              
+              <div class="mt-auto font-mono text-[8px] text-charonCyan tracking-widest select-none flex justify-between z-10">
+                <span>PLICO #2026</span>
+                <span class="text-white" id="envelope-route-code">L_TO_D</span>
+              </div>
+            </div>
+            
+            <!-- Ricevuta Astrale che scende alla fine dell'invio -->
+            <div id="astral-receipt" class="w-64 bg-charonCard/95 border border-charonCyan/30 rounded-xl shadow-[0_15px_45px_rgba(0,210,255,0.2)] p-5 relative opacity-0 scale-95 -translate-y-8 transition-all duration-700 z-20 flex flex-col gap-3 font-mono text-[9px] text-slate-300 select-none">
+              <div class="text-center border-b border-white/5 pb-2 text-charonCyan font-bold tracking-widest text-[10px] flex justify-center items-center gap-2">
+                <svg class="h-3 w-3 animate-spin text-charonCyan" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                RICEVUTA ASTRALE
+              </div>
+              <div class="space-y-1.5">
+                <div class="flex justify-between"><span>CODICE PORTALE:</span><span class="text-white" id="receipt-id">#C-8291A</span></div>
+                <div class="flex justify-between"><span>ROTTA:</span><span class="text-white" id="receipt-route">TERRA -> ELISIO</span></div>
+                <div class="flex justify-between"><span>MITTENTE:</span><span class="text-white" id="receipt-sender">NOME</span></div>
+                <div class="flex justify-between"><span>DESTINATARIO:</span><span class="text-white" id="receipt-recipient">NOME</span></div>
+                <div class="flex justify-between"><span>FREQUENZA:</span><span class="text-white" id="receipt-frequency">432 HZ</span></div>
+                <div class="flex justify-between"><span>TELEM. SINCRONIA:</span><span class="text-charonCyan font-bold">100.00%</span></div>
+                <div class="flex justify-between"><span>STATO INVIO:</span><span class="text-green-400 font-bold">CONSEGNATO</span></div>
+              </div>
+              <button id="close-receipt-btn" class="mt-2 w-full py-2 bg-charonCyan text-charonDeep font-bold rounded-lg uppercase tracking-wider text-[9px] hover:bg-white transition pointer-events-auto">Nuova Spedizione</button>
+            </div>
+          </div>
+
+          <!-- HUD Inferiore -->
+          <div class="relative z-10 p-6 flex justify-between font-mono text-[9px] text-charonCyan tracking-widest pointer-events-none flex-wrap gap-4">
+            <div class="flex flex-col gap-1">
+              <span class="text-slate-500 uppercase">Coordinate</span>
+              <span class="text-white drop-shadow-[0_0_3px_rgba(255,255,255,0.4)]" id="hud-coordinates">X: 0.0 | Y: 0.0</span>
+            </div>
+            <div class="flex flex-col gap-1 text-center">
+              <span class="text-slate-500 uppercase">Stato Portale</span>
+              <span class="text-charonCyan font-bold animate-pulse text-glow" id="hud-status">STANDBY</span>
+            </div>
+            <div class="flex flex-col gap-1 text-right">
+              <span class="text-slate-500 uppercase">Sincronia</span>
+              <span class="text-white drop-shadow-[0_0_3px_rgba(255,255,255,0.4)]" id="hud-sync">0.00%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Storico dei Messaggi Inviati (LocalStorage Terminal) -->
+      <div id="history-terminal-container" class="mt-8 max-w-3xl mx-auto hidden">
+        <div class="bg-charonDark/80 border border-white/5 rounded-xl p-4 font-mono text-[10px] text-slate-400 shadow-lg">
+          <div class="flex justify-between items-center border-b border-white/5 pb-2 mb-3">
+            <span class="text-charonCyan font-semibold flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+              REGISTRO LOGISTICO TRANSITI (LOCAL_DB)
+            </span>
+            <button id="clear-history-btn" class="text-slate-500 hover:text-red-400 transition text-[8px] uppercase tracking-wider">Pulisci Registro</button>
+          </div>
+          <div id="history-logs" class="space-y-2 max-h-32 overflow-y-auto pr-2">
+            <!-- I log si inseriscono qui in JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: INTERDIMENSIONAL SHOP -->
+    <section id="shop" class="py-24 border-t border-white/5 reveal">
+      <div class="text-center mb-16 max-w-2xl mx-auto">
+        <span class="text-charonCyan text-[10px] tracking-[0.35em] uppercase font-bold block mb-3">il nostro shop</span>
+        <h2 class="font-title text-4xl sm:text-5xl font-bold tracking-wide uppercase text-white mb-4">Emporio dell'Oltre</h2>
+        <p class="text-slate-400 text-sm font-light leading-relaxed">
+          Acquista gli strumenti calibrati per mantenere saldo il legame dimensionale e favorire il transito di memorie ed essenze materiali.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <!-- Prodotto 1 -->
+        <div class="bg-charonCard/40 border border-white/5 rounded-2xl p-5 hover:border-charonCyan/30 transition duration-500 hover:shadow-[0_20px_40px_rgba(0,210,255,0.08)] flex flex-col justify-between group">
+          <div class="space-y-4">
+            <!-- Immagine Prodotto -->
+            <div class="aspect-square rounded-xl overflow-hidden bg-charonDark border border-white/5 relative flex items-center justify-center">
+              <img src="./Immagini/Gadget.webp" alt="Plico della Memoria" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+              <span class="absolute top-3 right-3 px-2 py-1 rounded bg-charonCyan/10 border border-charonCyan/20 text-charonCyan text-[8px] font-bold tracking-widest uppercase">I ricordi</span>
+            </div>
+            
+            <div class="space-y-2">
+              <span class="text-charonCyan text-[9px] tracking-widest uppercase font-semibold">Prodotto fisico</span>
+              <h3 class="font-title text-xl font-bold text-white tracking-wide">Gadget etereo</h3>
+              <p class="text-slate-400 text-xs font-light leading-relaxed">
+                Gadget etereo per la conservazione dei ricordi. Include un plico della memoria e un portachiavi per mantenere il legame con i tuoi cari.
+              </p>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between pt-6 border-t border-white/5 mt-6">
+            <span class="text-white font-mono text-lg font-bold">✦18.50</span>
+            <button class="add-to-cart-btn px-4 py-2.5 rounded-lg bg-charonBlue text-white font-bold tracking-wider text-[9px] uppercase shadow-[0_2px_10px_rgba(0,82,255,0.2)] hover:bg-charonCyan hover:text-charonDeep transition duration-300" data-item="Plico della Memoria">Acquista</button>
+          </div>
+        </div>
+
+        <!-- Prodotto 2 -->
+        <div class="bg-charonCard/40 border border-white/5 rounded-2xl p-5 hover:border-charonCyan/30 transition duration-500 hover:shadow-[0_20px_40px_rgba(0,210,255,0.08)] flex flex-col justify-between group">
+          <div class="space-y-4">
+            <!-- Immagine Prodotto -->
+            <div class="aspect-square rounded-xl overflow-hidden bg-charonDark border border-white/5 relative flex items-center justify-center">
+              <img src="./Immagini/Sigarette.webp" alt="Lanterna Eterea" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+              <span class="absolute top-3 right-3 px-2 py-1 rounded bg-charonPurple/10 border border-charonPurple/20 text-charonViolet text-[8px] font-bold tracking-widest uppercase">Gli irrinunciabili</span>
+            </div>
+            
+            <div class="space-y-2">
+              <span class="text-charonCyan text-[9px] tracking-widest uppercase font-semibold">Prodotto fisico</span>
+              <h3 class="font-title text-xl font-bold text-white tracking-wide">Kit del fumatore</h3>
+              <p class="text-slate-400 text-xs font-light leading-relaxed">
+                Kit completo per l'esperienza del fumatore. Include sigarette in materiali eterei e un accendino per un utilizzo ottimale.
+              </p>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between pt-6 border-t border-white/5 mt-6">
+            <span class="text-white font-mono text-lg font-bold">✦12.00</span>
+            <button class="add-to-cart-btn px-4 py-2.5 rounded-lg bg-charonBlue text-white font-bold tracking-wider text-[9px] uppercase shadow-[0_2px_10px_rgba(0,82,255,0.2)] hover:bg-charonCyan hover:text-charonDeep transition duration-300" data-item="Kit del fumatore">Acquista</button>
+          </div>
+        </div>
+
+        <!-- Prodotto 3 -->
+        <div class="bg-charonCard/40 border border-white/5 rounded-2xl p-5 hover:border-charonCyan/30 transition duration-500 hover:shadow-[0_20px_40px_rgba(0,210,255,0.08)] flex flex-col justify-between group">
+          <div class="space-y-4">
+            <!-- Immagine Prodotto -->
+            <div class="aspect-square rounded-xl overflow-hidden bg-charonDark border border-white/5 relative flex items-center justify-center">
+              <img src="./Immagini/Porta foto.webp" alt="Kit Scrittura Etereo" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+              <span class="absolute top-3 right-3 px-2 py-1 rounded bg-charonCyan/10 border border-charonCyan/20 text-charonCyan text-[8px] font-bold tracking-widest uppercase">I ricordi</span>
+            </div>
+            
+            <div class="space-y-2">
+              <span class="text-charonCyan text-[9px] tracking-widest uppercase font-semibold">Logistica materiale</span>
+              <h3 class="font-title text-xl font-bold text-white tracking-wide">Box porta foto</h3>
+              <p class="text-slate-400 text-xs font-light leading-relaxed">
+                Box completa con 10 foto ricordo. Carica le foto sul poratle e il gioco è fatto: i tuoi ricordi più cari potranno essere condivisi con i tuoi cari nell'Oltretomba o conservati come cimelio eterno.
+              </p>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-between pt-6 border-t border-white/5 mt-6">
+            <span class="text-white font-mono text-lg font-bold">✦29.70</span>
+            <button class="add-to-cart-btn px-4 py-2.5 rounded-lg bg-charonBlue text-white font-bold tracking-wider text-[9px] uppercase shadow-[0_2px_10px_rgba(0,82,255,0.2)] hover:bg-charonCyan hover:text-charonDeep transition duration-300" data-item="Box porta foto">Acquista</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: CONTACTS & ALIGNMENT -->
+    <section id="contatti" class="py-24 border-t border-white/5 reveal">
+      <div class="text-center mb-16 max-w-2xl mx-auto">
+        <span class="text-charonCyan text-[10px] tracking-[0.35em] uppercase font-bold block mb-3">Allineamento Dimensionale</span>
+        <h2 class="font-title text-4xl sm:text-5xl font-bold tracking-wide uppercase text-white mb-4">Contatti & Supporto</h2>
+        <p class="text-slate-400 text-sm font-light leading-relaxed">
+          Hai bisogno di assistenza con una spedizione o riscontri problemi di allineamento di frequenza? Invia una richiesta di contatto al nostro centro di coordinamento.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        
+        <!-- Dettagli e coordinate -->
+        <div class="lg:col-span-5 space-y-8 font-light text-slate-300 text-sm leading-relaxed">
+          <div class="space-y-4">
+            <h3 class="font-title text-xl font-bold tracking-wider text-white uppercase">Coordinate Centrali</h3>
+            <p>I nostri uffici logistici terrestri coordinano la risonanza con il portale dimensionale per garantire stabilità a ogni singolo transito.</p>
+          </div>
+
+          <div class="space-y-4 font-mono text-xs">
+            <div class="flex items-start gap-4">
+              <div class="text-charonCyan">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <div>
+                <span class="block text-slate-500 uppercase text-[9px] tracking-widest font-semibold">Polo Terreno</span>
+                <span class="text-white">Piazza dell'Eternità 9, Milano — Fascia A-1</span>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="text-charonCyan">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div>
+                <span class="block text-slate-500 uppercase text-[9px] tracking-widest font-semibold">Canale Quantistico</span>
+                <span class="text-white">Frequenza: R-481.2 Hz (Canale di Risonanza Stabile)</span>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-4">
+              <div class="text-charonCyan">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <span class="block text-slate-500 uppercase text-[9px] tracking-widest font-semibold">Canale Mail</span>
+                <span class="text-white">info@caronte.it</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modulo Contatti -->
+        <div class="lg:col-span-7 bg-charonCard/40 border border-white/5 rounded-2xl p-6 md:p-8 backdrop-blur-md">
+          <form id="contact-form" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label for="contact-name" class="block text-[9px] tracking-widest text-slate-400 uppercase font-semibold">Nome</label>
+                <input type="text" id="contact-name" placeholder="Es. Luca" class="w-full bg-charonDeep/60 border border-charonCyan/10 hover:border-charonCyan/30 rounded-xl px-4 py-3 text-white text-xs font-semibold outline-none transition focus:border-charonCyan focus:shadow-[0_0_15px_rgba(0,210,255,0.15)]" required>
+              </div>
+              <div class="space-y-1.5">
+                <label for="contact-email" class="block text-[9px] tracking-widest text-slate-400 uppercase font-semibold">Email Terrena</label>
+                <input type="email" id="contact-email" placeholder="nome@esempio.it" class="w-full bg-charonDeep/60 border border-charonCyan/10 hover:border-charonCyan/30 rounded-xl px-4 py-3 text-white text-xs font-semibold outline-none transition focus:border-charonCyan focus:shadow-[0_0_15px_rgba(0,210,255,0.15)]" required>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="contact-subject" class="block text-[9px] tracking-widest text-slate-400 uppercase font-semibold">Oggetto</label>
+              <select id="contact-subject" class="w-full bg-charonDeep/60 border border-charonCyan/10 hover:border-charonCyan/30 rounded-xl px-4 py-3.5 text-white text-xs font-semibold outline-none transition focus:border-charonCyan focus:shadow-[0_0_15px_rgba(0,210,255,0.15)]" required>
+                <option value="smarrito">Spedizione post-mortem smarrita o non sincronizzata</option>
+                <option value="allineamento">Difficoltà di allineamento di frequenza quantistica</option>
+                <option value="prodotto">Informazioni commerciali o sui prodotti dello Shop</option>
+                <option value="collaborazione">Richiesta speciale di apertura portale privato</option>
+              </select>
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="contact-message" class="block text-[9px] tracking-widest text-slate-400 uppercase font-semibold">Dettaglio Messaggio</label>
+              <textarea id="contact-message" placeholder="Scrivi qui i dettagli del tuo problema logistico o della tua richiesta..." class="w-full bg-charonDeep/60 border border-charonCyan/10 hover:border-charonCyan/30 rounded-xl px-4 py-3 text-white text-xs font-light outline-none resize-none h-24 transition focus:border-charonCyan focus:shadow-[0_0_15px_rgba(0,210,255,0.15)]" required></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-charonBlue to-charonCyan text-white font-bold tracking-widest text-xs uppercase shadow-[0_4px_20px_rgba(0,82,255,0.3)] hover:shadow-[0_8px_30px_rgba(0,210,255,0.5)] transition duration-300 hover:-translate-y-0.5">Invia Messaggio di Allineamento</button>
+          </form>
+          <div id="contact-success" class="mt-4 p-4 bg-green-500/10 border border-green-500/20 text-green-400 text-xs rounded-xl font-mono text-center hidden">
+            Allineamento Stabilito! Il tuo messaggio è in viaggio verso il centro logistico Caronte.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/5 bg-charonDark py-16 text-center relative z-10">
+    <div class="max-w-[1200px] mx-auto px-6 flex flex-col items-center gap-6">
+      <svg class="w-12 h-12 filter drop-shadow-[0_0_8px_rgba(0,210,255,0.3)] animate-pulse" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="32" stroke="rgba(255, 255, 255, 0.3)" stroke-width="1.5" stroke-dasharray="5 5" fill="none" />
+        <path d="M 100 70 Q 100 100 70 100 Q 100 100 100 130 Q 100 100 130 100 Q 100 100 100 70 Z" fill="white" />
+        <path d="M 100 79 Q 100 100 79 100 Q 100 100 100 121 Q 100 100 121 100 Q 100 100 100 79 Z" fill="white" transform="rotate(45 100 100)" />
+      </svg>
+      <div class="font-title text-2xl tracking-[0.2em] text-white">CARONTE</div>
+      <div class="text-xs text-slate-500 tracking-[0.3em] uppercase">Servizio di spedizioni ultraterrene</div>
+      
+      <nav class="flex flex-wrap justify-center gap-8 my-6" aria-label="Navigazione Piè di Pagina">
+        <a href="#brand" class="text-xs text-slate-500 hover:text-charonCyan transition">Il Brand</a>
+        <a href="#messaggi" class="text-xs text-slate-500 hover:text-charonCyan transition">Messaggi</a>
+        <a href="#shop" class="text-xs text-slate-500 hover:text-charonCyan transition">Shop</a>
+        <a href="#contatti" class="text-xs text-slate-500 hover:text-charonCyan transition">Contatti</a>
+      </nav>
+
+      <p class="text-[10px] text-slate-600 max-w-lg leading-relaxed">
+        &copy; 2026 Caronte - Oltre i confini.<br>
+        L'intero progetto è frutto di un lavoro universitario, per il corso di Web Design II in accademia LABA - Brescia, a cura di Pezzotti Luca &  Gargioni Mattia.
+      </p>
+    </div>
+  </footer>
+
+  <!-- SCRIPT APPLICATIVO INTERATTIVO -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initConstellationBg();
+      initHeaderScroll();
+      initMobileMenu();
+      initScrollReveal();
+      initCart();
+      initContactForm();
+      initTransitSimulator();
+    });
+
+    /* =========================================================================
+       1. SFONDO COSTELLAZIONI SU CANVAS (Stelle Interattive & Collegamenti)
+       ========================================================================= */
+    function initConstellationBg() {
+      const canvas = document.getElementById('star-canvas');
+      if (!canvas) return;
+
+      const ctx = canvas.getContext('2d');
+      let stars = [];
+      let mouse = { x: null, y: null, radius: 140 };
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        spawnStars();
+      }
+
+      class Star {
+        constructor(x, y) {
+          this.x = x;
+          this.y = y;
+          this.baseSize = Math.random() * 1.5 + 0.4;
+          this.size = this.baseSize;
+          this.speedX = (Math.random() - 0.5) * 0.12;
+          this.speedY = (Math.random() - 0.5) * 0.12;
+          this.twinkleFactor = Math.random() * 0.015 + 0.005;
+          this.twinkleDir = 1;
+          this.brightness = Math.random();
+        }
+
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+
+          if (this.x < 0) this.x = canvas.width;
+          if (this.x > canvas.width) this.x = 0;
+          if (this.y < 0) this.y = canvas.height;
+          if (this.y > canvas.height) this.y = 0;
+
+          this.brightness += this.twinkleFactor * this.twinkleDir;
+          if (this.brightness >= 1 || this.brightness <= 0.15) {
+            this.twinkleDir *= -1;
+          }
+          this.size = this.baseSize * (0.8 + this.brightness * 0.4);
+        }
+
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${0.25 + this.brightness * 0.75})`;
+          ctx.fill();
+        }
+      }
+
+      function spawnStars() {
+        stars = [];
+        const area = (canvas.width * canvas.height) / 13000;
+        const starCount = Math.min(Math.max(area, 40), 160);
+        
+        for (let i = 0; i < starCount; i++) {
+          stars.push(new Star(Math.random() * canvas.width, Math.random() * canvas.height));
+        }
+      }
+
+      function drawConnections() {
+        for (let i = 0; i < stars.length; i++) {
+          for (let j = i + 1; j < stars.length; j++) {
+            const dx = stars[i].x - stars[j].x;
+            const dy = stars[i].y - stars[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 110) {
+              const alpha = (1 - dist / 110) * 0.1;
+              ctx.beginPath();
+              ctx.moveTo(stars[i].x, stars[i].y);
+              ctx.lineTo(stars[j].x, stars[j].y);
+              ctx.strokeStyle = `rgba(0, 210, 255, ${alpha})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+
+          if (mouse.x !== null && mouse.y !== null) {
+            const dx = stars[i].x - mouse.x;
+            const dy = stars[i].y - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < mouse.radius) {
+              const alpha = (1 - dist / mouse.radius) * 0.22;
+              ctx.beginPath();
+              ctx.moveTo(stars[i].x, stars[i].y);
+              ctx.lineTo(mouse.x, mouse.y);
+              ctx.strokeStyle = `rgba(0, 210, 255, ${alpha})`;
+              ctx.lineWidth = 0.7;
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(star => {
+          star.update();
+          star.draw();
+        });
+        drawConnections();
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      });
+      window.addEventListener('mouseleave', () => {
+        mouse.x = null;
+        mouse.y = null;
+      });
+
+      resizeCanvas();
+      animate();
+    }
+
+    /* =========================================================================
+       2. SCROLL EFFETTI (Header Sticky Blur & Menu Link Attivi)
+       ========================================================================= */
+    function initHeaderScroll() {
+      const header = document.getElementById('main-header');
+      if (!header) return;
+      
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+          header.classList.add('py-2', 'bg-charonDeep/80', 'border-white/10');
+          header.classList.remove('py-4', 'bg-charonDeep/50', 'border-white/5');
+        } else {
+          header.classList.add('py-4', 'bg-charonDeep/50', 'border-white/5');
+          header.classList.remove('py-2', 'bg-charonDeep/80', 'border-white/10');
+        }
+      });
+      
+      // Nav active styling
+      const navLinks = document.querySelectorAll('nav a');
+      const sections = document.querySelectorAll('section');
+      
+      window.addEventListener('scroll', () => {
+        let currentId = '';
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          if (window.scrollY >= (sectionTop - 180)) {
+            currentId = section.getAttribute('id');
+          }
+        });
+
+        navLinks.forEach(link => {
+          link.classList.remove('text-charonCyan', 'border-charonCyan');
+          link.classList.add('text-slate-400', 'border-transparent');
+          if (link.getAttribute('href') === `#${currentId}`) {
+            link.classList.add('text-charonCyan', 'border-charonCyan');
+            link.classList.remove('text-slate-400', 'border-transparent');
+          }
+        });
+      });
+    }
+
+    /* =========================================================================
+       3. MENU MOBILE INTERATTIVO
+       ========================================================================= */
+    function initMobileMenu() {
+      const menuBtn = document.getElementById('menu-btn');
+      const closeMenuBtn = document.getElementById('close-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      const mobileLinks = document.querySelectorAll('.mobile-link');
+
+      if (!menuBtn || !mobileMenu) return;
+
+      const toggleMenu = (open) => {
+        if (open) {
+          mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+          mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
+        } else {
+          mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+          mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
+        }
+      };
+
+      menuBtn.addEventListener('click', () => toggleMenu(true));
+      closeMenuBtn.addEventListener('click', () => toggleMenu(false));
+      mobileLinks.forEach(link => link.addEventListener('click', () => toggleMenu(false)));
+    }
+
+    /* =========================================================================
+       4. SCROLL REVEAL (IntersectionObserver per ingressi morbidi)
+       ========================================================================= */
+    function initScrollReveal() {
+      const revealElements = document.querySelectorAll('.reveal');
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        root: null,
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      });
+
+      revealElements.forEach(el => observer.observe(el));
+    }
+
+    /* =========================================================================
+       5. GESTIONE CARRELLO (Acquisto con micro-animazione)
+       ========================================================================= */
+    function initCart() {
+      const cartCount = document.getElementById('cart-count');
+      const buyButtons = document.querySelectorAll('.add-to-cart-btn');
+      let count = 0;
+
+      buyButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          count++;
+          if (cartCount) {
+            cartCount.innerText = count;
+            
+            // Animazione pulse di notifica sul contatore
+            cartCount.classList.add('scale-150', 'bg-white', 'text-charonBlue');
+            cartCount.classList.remove('scale-100');
+            
+            setTimeout(() => {
+              cartCount.classList.remove('scale-150', 'bg-white', 'text-charonBlue');
+              cartCount.classList.add('scale-100');
+            }, 300);
+          }
+
+          // Effetto visivo pulsante
+          const originalText = btn.innerText;
+          btn.innerText = 'AGGIUNTO';
+          btn.classList.remove('bg-charonBlue');
+          btn.classList.add('bg-green-500');
+          
+          setTimeout(() => {
+            btn.innerText = originalText;
+            btn.classList.add('bg-charonBlue');
+            btn.classList.remove('bg-green-500');
+          }, 1000);
+        });
+      });
+    }
+
+    /* =========================================================================
+       6. MODULO CONTATTI VALIDATO
+       ========================================================================= */
+    function initContactForm() {
+      const form = document.getElementById('contact-form');
+      const successMsg = document.getElementById('contact-success');
+
+      if (!form || !successMsg) return;
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        successMsg.classList.remove('hidden');
+        form.reset();
+        
+        setTimeout(() => {
+          successMsg.classList.add('hidden');
+        }, 5000);
+      });
+    }
+
+    /* =========================================================================
+       7. SIMULATORE DI SPEDIZIONE E MESSAGGISTICA (Animazione Particelle + HUD)
+       ========================================================================= */
+    function initTransitSimulator() {
+      const form = document.getElementById('messaging-form');
+      const canvas = document.getElementById('portal-canvas');
+      const env = document.getElementById('envelope-interactive');
+      const envLetter = document.getElementById('envelope-letter');
+      const envFlap = document.getElementById('envelope-flap');
+      const envSeal = document.getElementById('envelope-seal');
+      const letterBodyPreview = document.getElementById('letter-body-preview');
+      const stampDate = document.getElementById('letter-stamp-date');
+      const envRouteCode = document.getElementById('envelope-route-code');
+
+      // Receipt elements
+      const receipt = document.getElementById('astral-receipt');
+      const receiptId = document.getElementById('receipt-id');
+      const receiptRoute = document.getElementById('receipt-route');
+      const receiptSender = document.getElementById('receipt-sender');
+      const receiptRecipient = document.getElementById('receipt-recipient');
+      const receiptFrequency = document.getElementById('receipt-frequency');
+      const closeReceiptBtn = document.getElementById('close-receipt-btn');
+
+      // LocalStorage elements
+      const termContainer = document.getElementById('history-terminal-container');
+      const historyLogs = document.getElementById('history-logs');
+      const clearHistoryBtn = document.getElementById('clear-history-btn');
+
+      // HUD elements
+      const hudSender = document.getElementById('hud-sender-val');
+      const hudRecipient = document.getElementById('hud-recipient-val');
+      const hudCoordinates = document.getElementById('hud-coordinates');
+      const hudStatus = document.getElementById('hud-status');
+      const hudSync = document.getElementById('hud-sync');
+
+      if (!form || !canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      let currentStep = 'idle'; // idle, letter-writing, envelope-folding, dematerializing, traveling, arriving, finished
+      let particles = [];
+      let beamProgress = 0;
+      let activeAnimation = null;
+      let stepTimer = 0;
+
+      // Imposta dimensioni del canvas HUD
+      function resizeSim() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      }
+      
+      window.addEventListener('resize', resizeSim);
+      resizeSim();
+
+      const getDimensions = () => {
+        const w = canvas.width;
+        const h = canvas.height;
+        return {
+          start: { x: w * 0.15, y: h * 0.65 },
+          gate: { x: w * 0.5, y: h * 0.4 },
+          end: { x: w * 0.85, y: h * 0.65 },
+          w, h
+        };
+      };
+
+      // Disegna i nodi e la griglia dell'HUD in standby
+      function drawStaticHUD(dims) {
+        const { start, gate, end, w, h } = dims;
+
+        // Disegna una griglia radar leggera
+        ctx.strokeStyle = 'rgba(0, 210, 255, 0.035)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < w; x += 25) {
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+        }
+        for (let y = 0; y < h; y += 25) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        }
+
+        // Nodi delle sfere dimensionali
+        ctx.lineWidth = 1.5;
+        
+        // Nodo Partenza
+        ctx.beginPath();
+        ctx.arc(start.x, start.y, 25, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.fillStyle = 'rgba(4, 8, 21, 0.8)';
+        ctx.fill(); ctx.stroke();
+
+        // Nodo Destinazione
+        ctx.beginPath();
+        ctx.arc(end.x, end.y, 25, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+        ctx.fillStyle = 'rgba(4, 8, 21, 0.8)';
+        ctx.fill(); ctx.stroke();
+
+        // Nodo Portale Centrale
+        ctx.beginPath();
+        ctx.arc(gate.x, gate.y, 40, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(0, 210, 255, 0.25)';
+        ctx.fillStyle = 'rgba(2, 5, 11, 0.9)';
+        ctx.fill(); ctx.stroke();
+
+        // Anello pulsante radar esterno del Portale
+        const radarSize = 40 + Math.sin(Date.now() * 0.0035) * 6;
+        ctx.beginPath();
+        ctx.arc(gate.x, gate.y, radarSize, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(0, 210, 255, 0.08)';
+        ctx.stroke();
+
+        // Raggio tratteggiato delle rotte orbitali
+        ctx.beginPath();
+        ctx.setLineDash([5, 5]);
+        ctx.moveTo(start.x + 20, start.y - 15);
+        ctx.quadraticCurveTo(w * 0.35, h * 0.35, gate.x - 30, gate.y + 20);
+        ctx.moveTo(gate.x + 30, gate.y + 20);
+        ctx.quadraticCurveTo(w * 0.65, h * 0.35, end.x - 20, end.y - 15);
+        ctx.strokeStyle = 'rgba(0, 210, 255, 0.2)';
+        ctx.stroke();
+        ctx.setLineDash([]); // Reset
+
+        // Etichette dei nodi
+        ctx.font = '7px monospace';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+        ctx.textAlign = 'center';
+        ctx.fillText('STAZIONE VIVI', start.x, start.y + 40);
+        ctx.fillText('STAZIONE MORTI', end.x, end.y + 40);
+        ctx.fillStyle = 'rgba(0, 210, 255, 0.6)';
+        ctx.fillText('PORTALE CARONTE', gate.x, gate.y - 55);
+      }
+
+      function updateHUDData(coords, status, sync) {
+        if (hudCoordinates) hudCoordinates.innerText = coords;
+        if (hudStatus) hudStatus.innerText = status;
+        if (hudSync) hudSync.innerText = sync + '%';
+      }
+
+      function simulatorLoop() {
+        if (currentStep !== 'idle') return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawStaticHUD(getDimensions());
+        activeAnimation = requestAnimationFrame(simulatorLoop);
+      }
+
+      simulatorLoop();
+      loadHistory(); // Mostra lo storico al caricamento se presente
+
+      // Gestione del Submit del Form di Invio
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (currentStep !== 'idle') return; // Impedisce invii multipli durante le animazioni
+
+        const direction = document.getElementById('route-direction').value;
+        const sender = document.getElementById('sender-name').value;
+        const recipient = document.getElementById('recipient-name').value;
+        const freqText = document.getElementById('dimension-freq').options[document.getElementById('dimension-freq').selectedIndex].text;
+        const freqValue = document.getElementById('dimension-freq').value;
+        const message = document.getElementById('message-content').value;
+
+        // Configurazione delle etichette HUD
+        hudSender.innerText = direction === 'live-to-dead' ? 'VIVO_LINK.DB' : 'MORT_LINK.DB';
+        hudRecipient.innerText = direction === 'live-to-dead' ? `${recipient.toUpperCase().substring(0, 8)}_SOUL` : `${recipient.toUpperCase().substring(0, 8)}_LIVE`;
+        
+        envRouteCode.innerText = direction === 'live-to-dead' ? 'LIVE_TO_DEAD' : 'DEAD_TO_LIVE';
+        stampDate.innerText = new Date().toLocaleDateString('it-IT');
+        letterBodyPreview.innerText = `"${message.substring(0, 85)}${message.length > 85 ? '...' : ''}"`;
+
+        // Avvio sequenza animazioni interattive
+        currentStep = 'letter-writing';
+        cancelAnimationFrame(activeAnimation);
+        stepTimer = 0;
+        
+        // 1. Fai comparire la busta trasparente e fa scendere la lettera dentro
+        env.classList.remove('opacity-0', 'scale-75');
+        env.classList.add('opacity-100', 'scale-100');
+        envLetter.classList.remove('opacity-0', 'translate-y-2');
+        envLetter.classList.add('opacity-100', 'translate-y-0');
+        
+        updateHUDData('ACQUISIZIONE SEGNALE', 'SCRITTURA PLICO', '12.45');
+
+        // Sequenza temporizzata in JavaScript
+        setTimeout(() => {
+          // 2. Chiudi la lettera e fai scendere il flap della busta (Folding animation)
+          currentStep = 'envelope-folding';
+          envLetter.style.transform = 'translateY(25px) scale(0.9)';
+          envLetter.style.opacity = '0';
+          
+          setTimeout(() => {
+            envFlap.style.transform = 'rotateX(180deg)';
+            envSeal.style.opacity = '1';
+            updateHUDData('ALLINEAMENTO FREQUENZA', 'SIGILLATURA QUANTICA', '35.80');
+          }, 300);
+
+          setTimeout(() => {
+            // 3. Dematerializzazione: Fai tremare la busta e convertila in particelle
+            currentStep = 'dematerializing';
+            env.classList.add('animate-pulse');
+            updateHUDData('SINTONIZZAZIONE CANALE', 'DEMATERIALIZZAZIONE...', '68.90');
+            
+            // Genera le particelle sul canvas nel punto della busta (centro)
+            const dims = getDimensions();
+            particles = [];
+            for (let i = 0; i < 45; i++) {
+              particles.push({
+                x: dims.w / 2 + (Math.random() - 0.5) * 60,
+                y: dims.h / 2 + (Math.random() - 0.5) * 60,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                alpha: Math.random() * 0.7 + 0.3,
+                size: Math.random() * 3 + 1,
+                color: i % 2 === 0 ? '#00d2ff' : '#7c3aed'
+              });
+            }
+
+            // Scomparsa busta fisicamente
+            setTimeout(() => {
+              env.classList.remove('opacity-100', 'scale-100', 'animate-pulse');
+              env.classList.add('opacity-0', 'scale-75');
+              
+              // Inizia l'animazione di transito delle particelle
+              currentStep = 'traveling';
+              beamProgress = 0;
+              particles = []; // Ripulisci per il fascio
+              runTransmissionAnimation(direction, sender, recipient, freqText, freqValue, message);
+            }, 1000);
+
+          }, 1800);
+
+        }, 2200);
+      });
+
+      // Esecuzione dell'animazione del fascio e delle particelle sul canvas
+      function runTransmissionAnimation(direction, sender, recipient, freqText, freqValue, message) {
+        const dims = getDimensions();
+        const startPoint = direction === 'live-to-dead' ? dims.start : dims.end;
+        const endPoint = direction === 'live-to-dead' ? dims.end : dims.start;
+        const gatePoint = dims.gate;
+
+        function animateTransmission() {
+          if (currentStep !== 'traveling' && currentStep !== 'arriving') return;
+          
+          ctx.clearRect(0, 0, dims.w, dims.h);
+          drawStaticHUD(dims);
+
+          stepTimer++;
+
+          if (currentStep === 'traveling') {
+            beamProgress += 0.013; // Velocità di percorrenza
+            if (beamProgress > 1) beamProgress = 1;
+
+            // Calcolo posizione lungo la curva Bezier quadratica passante per il Portale
+            let cx, cy;
+            const w = dims.w;
+            const h = dims.h;
+
+            if (beamProgress <= 0.5) {
+              // Tratta 1: Nocchiero Partenza -> Portale Centrale
+              const t = beamProgress * 2;
+              cx = (1 - t) * (1 - t) * startPoint.x + 2 * (1 - t) * t * (w * 0.35) + t * t * gatePoint.x;
+              cy = (1 - t) * (1 - t) * startPoint.y + 2 * (1 - t) * t * (h * 0.35) + t * t * gatePoint.y;
+              updateHUDData(`DILATAZIONE SPAZIALE`, 'TRANSITO DIMENSIONALE', (beamProgress * 100).toFixed(1));
+            } else {
+              // Tratta 2: Portale Centrale -> Nocchiero Destinazione
+              const t = (beamProgress - 0.5) * 2;
+              cx = (1 - t) * (1 - t) * gatePoint.x + 2 * (1 - t) * t * (w * 0.65) + t * t * endPoint.x;
+              cy = (1 - t) * (1 - t) * gatePoint.y + 2 * (1 - t) * t * (h * 0.35) + t * t * endPoint.y;
+              updateHUDData(`COLLASSAMENTO FREQUENZA`, 'CONFLUENZA TERMINALE', (beamProgress * 100).toFixed(1));
+            }
+
+            // Generazione scia di particelle
+            if (Math.random() < 0.85) {
+              particles.push({
+                x: cx,
+                y: cy,
+                vx: (Math.random() - 0.5) * 1.5,
+                vy: (Math.random() - 0.5) * 1.5,
+                alpha: 1,
+                size: Math.random() * 3 + 1.5,
+                color: Math.random() < 0.6 ? '#00d2ff' : '#a78bfa'
+              });
+            }
+
+            // Disegna il nucleo del plico luminoso
+            ctx.beginPath();
+            ctx.arc(cx, cy, 7, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = 'rgba(0, 210, 255, 0.85)';
+            ctx.shadowBlur = 18;
+            ctx.fill();
+            ctx.shadowBlur = 0; // Reset
+
+            // Disegna e aggiorna la scia
+            particles.forEach((p, idx) => {
+              p.x += p.vx;
+              p.y += p.vy;
+              p.alpha -= 0.022;
+
+              if (p.alpha <= 0) {
+                particles.splice(idx, 1);
+                return;
+              }
+
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+              ctx.fillStyle = p.color;
+              ctx.globalAlpha = p.alpha;
+              ctx.fill();
+              ctx.globalAlpha = 1; // Reset
+
+              // Linee di costellazione tra scia e nucleo
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(cx, cy);
+              ctx.strokeStyle = `rgba(0, 210, 255, ${p.alpha * 0.2})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            });
+
+            if (beamProgress >= 1) {
+              currentStep = 'arriving';
+              stepTimer = 0;
+              particles = [];
+            }
+          }
+
+          if (currentStep === 'arriving') {
+            // Genera l'esplosione luminosa finale all'arrivo
+            if (stepTimer === 1) {
+              updateHUDData('ALLINEAMENTO COMPLETATO', 'CONSEGNA IN CORSO...', '100.00');
+              for (let i = 0; i < 40; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 3.5 + 1;
+                particles.push({
+                  x: endPoint.x,
+                  y: endPoint.y,
+                  vx: Math.cos(angle) * speed,
+                  vy: Math.sin(angle) * speed,
+                  alpha: 1,
+                  size: Math.random() * 3 + 1,
+                  color: i % 2 === 0 ? '#ffffff' : '#00d2ff'
+                });
+              }
+            }
+
+            particles.forEach((p, idx) => {
+              p.x += p.vx;
+              p.y += p.vy;
+              p.alpha -= 0.025;
+
+              if (p.alpha <= 0) {
+                particles.splice(idx, 1);
+                return;
+              }
+
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+              ctx.fillStyle = p.color;
+              ctx.globalAlpha = p.alpha;
+              ctx.fill();
+              ctx.globalAlpha = 1;
+            });
+
+            if (stepTimer > 70) {
+              currentStep = 'finished';
+              
+              // Mostra la ricevuta di transito astrale
+              showReceipt(direction, sender, recipient, freqText, message);
+              saveTransitToStorage(direction, sender, recipient, freqText, message);
+            }
+          }
+
+          activeAnimation = requestAnimationFrame(animateTransmission);
+        }
+
+        animateTransmission();
+      }
+
+      // Mostra la ricevuta astrale
+      function showReceipt(direction, sender, recipient, freqText, message) {
+        const transId = 'C-' + Math.floor(10000 + Math.random() * 90000) + 'X';
+        
+        receiptId.innerText = transId;
+        receiptRoute.innerText = direction === 'live-to-dead' ? 'TERRA -> OLTRETOMBA' : 'OLTRETOMBA -> TERRA';
+        receiptSender.innerText = sender.toUpperCase();
+        receiptRecipient.innerText = recipient.toUpperCase();
+        receiptFrequency.innerText = freqText;
+
+        receipt.classList.remove('opacity-0', 'scale-95', '-translate-y-8');
+        receipt.classList.add('opacity-100', 'scale-100', 'translate-y-0');
+        updateHUDData('PLICO ARCHIVIATO', 'TRASMISSIONE COMPLETATA', '100.00');
+      }
+
+      // Chiudi la ricevuta astrale e resetta il simulatore
+      closeReceiptBtn.addEventListener('click', () => {
+        receipt.classList.add('opacity-0', 'scale-95', '-translate-y-8');
+        receipt.classList.remove('opacity-100', 'scale-100', 'translate-y-0');
+        
+        // Ripristina gli stili della busta per una nuova compilazione
+        envFlap.style.transform = 'rotateX(0deg)';
+        envSeal.style.opacity = '0';
+        envLetter.style.transform = 'translateY(0) scale(1)';
+        envLetter.style.opacity = '0';
+        
+        form.reset();
+        currentStep = 'idle';
+        simulatorLoop();
+      });
+
+      // Salva nel localStorage e aggiorna il terminale
+      function saveTransitToStorage(direction, sender, recipient, freqText, message) {
+        const transits = JSON.parse(localStorage.getItem('caronte_transits') || '[]');
+        const logId = 'TRANS_' + Math.floor(1000 + Math.random() * 9000);
+        
+        transits.push({
+          id: logId,
+          timestamp: new Date().toISOString(),
+          direction,
+          sender,
+          recipient,
+          freqText,
+          excerpt: message.substring(0, 45) + (message.length > 45 ? '...' : '')
+        });
+
+        localStorage.setItem('caronte_transits', JSON.stringify(transits));
+        loadHistory();
+      }
+
+      // Carica lo storico
+      function loadHistory() {
+        const transits = JSON.parse(localStorage.getItem('caronte_transits') || '[]');
+        if (transits.length === 0) {
+          termContainer.classList.add('hidden');
+          return;
+        }
+
+        termContainer.classList.remove('hidden');
+        historyLogs.innerHTML = '';
+
+        transits.slice().reverse().forEach(log => {
+          const time = new Date(log.timestamp).toLocaleTimeString('it-IT');
+          const route = log.direction === 'live-to-dead' ? 'VIVI -> MORTI' : 'MORTI -> VIVI';
+          
+          const logDiv = document.createElement('div');
+          logDiv.className = 'border-b border-white/5 pb-1 flex flex-col sm:flex-row justify-between sm:items-center gap-1 hover:text-white transition';
+          logDiv.innerHTML = `
+            <span>[${time}] <span class="text-charonCyan">${log.id}</span>: Sincronizzazione rotta [${route}] (${log.freqText})</span>
+            <span class="text-slate-500 font-light truncate max-w-xs text-[9px]">MSG: ${log.excerpt}</span>
+          `;
+          historyLogs.appendChild(logDiv);
+        });
+      }
+
+      // Pulisci lo storico
+      clearHistoryBtn.addEventListener('click', () => {
+        localStorage.removeItem('caronte_transits');
+        loadHistory();
+      });
+    }
+  </script>
+</body>
+</html>
